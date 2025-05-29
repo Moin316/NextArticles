@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "prisma generate && prisma migrate deploy && next build",
+  "buildCommand": "npx prisma generate && next build",
   "devCommand": "npm run dev",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
