@@ -146,6 +146,7 @@ const DeleteButton:React.FC<DeleteButtonProps> = ({articleId}) => {
     <Button
       variant={"ghost"}
       className="text-foreground-muted hover:text-foreground"
+      disabled={isPending}
     >
       <Trash className="size-4" />
     </Button>

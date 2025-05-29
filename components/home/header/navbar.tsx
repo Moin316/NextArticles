@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Button } from "../../ui/button";
 import SearchInput from "./SearchInput";
 import { ModeToggle } from "./ToggleMode";
-import { Ghost, Menu, Search, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   SignedIn,

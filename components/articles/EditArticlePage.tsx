@@ -18,7 +18,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
  }
  const EditArticlePage: React.FC<EditArticlePageProps> = ({ article }) => {
     const [content, setContent] = useState(article.content);
-    const [_, setIsClient] = useState(false);
+    const [, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true); // Avoid SSR hydration issues with ReactQuill
