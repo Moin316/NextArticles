@@ -1,4 +1,4 @@
-import { Prisma } from '@/app/generated/prisma'
+import { Prisma } from '@prisma/client'
 import Image from 'next/image'
 import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'

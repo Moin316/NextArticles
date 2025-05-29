@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { CalendarIcon, UserIcon } from 'lucide-react'
-import { Prisma } from '@/app/generated/prisma'
+import { Prisma } from '@prisma/client'
 
 type CommentListProps={
     comments:Prisma.CommentGetPayload<{
