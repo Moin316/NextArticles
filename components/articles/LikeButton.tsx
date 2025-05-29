@@ -3,7 +3,7 @@ import React, { useState, useTransition } from "react";
 import { Button } from "../ui/button";
 import { Bookmark, Share2, ThumbsUp } from "lucide-react";
 import { toggleLike } from "@/actions/LikeDislike";
-import { Likes } from "@/app/generated/prisma";
+import { Likes } from "@prisma/client";
 
 type LikeButtonProps = {
   articleId: string;

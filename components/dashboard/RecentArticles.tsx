@@ -13,7 +13,7 @@ import {
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { Trash } from "lucide-react";
-import { Prisma } from "@/app/generated/prisma";
+import { Prisma } from "@prisma/client";
 import { deleteArticle } from "@/actions/delete-article";
 
 type ArticleType = Prisma.ArticlesGetPayload<{

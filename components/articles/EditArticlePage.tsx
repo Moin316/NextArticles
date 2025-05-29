@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import "react-quill-new/dist/quill.snow.css";
 import { createArticles } from "@/actions/create-article";
 import dynamic from "next/dynamic";
-import { Articles } from "@/app/generated/prisma";
+import { Articles } from "@prisma/client";
 import Image from "next/image";
 import { editArticles } from "@/actions/edit-articles";
 
