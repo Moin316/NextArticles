@@ -3,15 +3,8 @@ import ArticleSarchInput from "@/components/articles/ArticleSarchInput";
 import ArticlesLoading from "@/components/articles/ArticlesLoading";
 import { Suspense } from "react";
 
-type PageProps = {
-  searchParams: {
-    search?: string;
-    page?: string;
-  };
-};
-// @ts-ignore
-export default function Page({ searchParams }: PageProps) {
-  const search = searchParams.search || "";
+export default function Page({ searchParams }: any) {
+  const search = searchParams?.search || "";
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
