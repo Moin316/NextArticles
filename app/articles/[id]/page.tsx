@@ -1,14 +1,16 @@
-import { prisma } from '@/app/lib/prisma';
-import ArticleDetailPage from '@/components/articles/ArticleDetailPage';
-import React from 'react';
+// app/articles/[id]/page.tsx
+import { prisma } from "@/app/lib/prisma";
+import ArticleDetailPage from "@/components/articles/ArticleDetailPage";
+import { notFound } from "next/navigation";
+import React from "react";
 
 type ArticlePageProps = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
-const page: React.FC<ArticlePageProps> = async ({ params }) => {
-  const { id } = await params;
-  
+const Page = async ({ params }: ArticlePageProps) => {
+  const { id } = params;
+
   const article = await prisma.articles.findUnique({
     where: { id },
     include: {
@@ -16,15 +18,15 @@ const page: React.FC<ArticlePageProps> = async ({ params }) => {
         select: {
           name: true,
           email: true,
-          imageUrl: true
-        }
+          imageUrl: true,
+        },
       },
-      likes: true,  // Include likes relation here
+      likes: true,
     },
   });
 
   if (!article) {
-    return <div>Article not found</div>;
+    notFound(); // ✅ triggers your custom 404 page
   }
 
   return (
@@ -34,4 +36,4 @@ const page: React.FC<ArticlePageProps> = async ({ params }) => {
   );
 };
 
-export default page;
+export default Page;
