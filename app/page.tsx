@@ -1,11 +1,11 @@
+// app/page.tsx
 import { BlogFooter } from "@/components/home/blog-footer";
 import HeroSection from "@/components/home/HeroSection";
-import TopArticles from "@/components/home/TopArticles";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React, { Suspense } from "react";
+import TopArticlesWrapper from "@/components/home/TopArticlesWrapper";
 
-const page = async () => {
+export default function HomePage() {
   return (
     <main>
       <HeroSection />
@@ -20,13 +20,11 @@ const page = async () => {
             </p>
           </div>
 
-          {/* Top Articles */}
-          <Suspense fallback={<h1>Loading....</h1>}>
-            <TopArticles/>
-          </Suspense>
+          {/* Now safely load TopArticles dynamically via client wrapper */}
+          <TopArticlesWrapper />
 
           <div className="mt-12 text-center">
-            <Link href={"/articles"}>
+            <Link href="/articles">
               <Button
                 variant="outline"
                 className="rounded-full px-8 py-6 text-lg hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900"
@@ -40,6 +38,4 @@ const page = async () => {
       <BlogFooter />
     </main>
   );
-};
-
-export default page; 
+}
