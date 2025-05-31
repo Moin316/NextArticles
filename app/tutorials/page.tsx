@@ -9,7 +9,7 @@ const TutorialsPage = () => {
             Tutorials
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300">
-            Coming soon! We're working on creating amazing tutorials for you.
+            Coming soon! We are working on creating amazing tutorials for you.
           </p>
         </div>
 

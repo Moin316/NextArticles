@@ -1,5 +1,11 @@
 "use client";
-import { FormEvent, startTransition, useActionState, useEffect, useState } from "react";
+import {
+  FormEvent,
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,10 +15,10 @@ import "react-quill-new/dist/quill.snow.css";
 import { createArticles } from "@/actions/create-article";
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
- 
+
 export function CreateArticlePage() {
   const [content, setContent] = useState("");
-  const [_, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true); // Avoid SSR hydration issues with ReactQuill
@@ -21,7 +27,6 @@ export function CreateArticlePage() {
   const [formState, action, isPending] = useActionState(createArticles, {
     errors: {},
   });
- 
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,7 +38,7 @@ export function CreateArticlePage() {
       action(formData);
     });
   };
- 
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <Card>
@@ -73,7 +78,6 @@ export function CreateArticlePage() {
                 <option value="travel">Travel</option>
                 <option value="food">Food</option>
                 <option value="lifestyle">Lifestyle</option>
-                
               </select>
               {formState.errors.category && (
                 <span className="font-medium text-sm text-red-500">
@@ -99,17 +103,14 @@ export function CreateArticlePage() {
 
             <div className="space-y-2">
               <Label>Content</Label>
-              <ReactQuill
-                theme="snow"
-                value={content}
-                onChange={setContent} 
-              />
+              <ReactQuill theme="snow" value={content} onChange={setContent} />
               {formState.errors.content && (
                 <span className="font-medium text-sm text-red-500">
                   {formState.errors.content[0]}
                 </span>
               )}
             </div>
+
             {formState.errors.formErrors && (
               <div className="dark:bg-transparent bg-red-100 p-2 border border-red-600">
                 <span className="font-medium text-sm text-red-500">
@@ -117,6 +118,7 @@ export function CreateArticlePage() {
                 </span>
               </div>
             )}
+
             <div className="flex justify-end gap-4">
               <Button type="button" variant="outline">
                 Cancel

@@ -11,7 +11,7 @@ export async function GET() {
       },
     })
     return NextResponse.json(articles)
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Error fetching articles' }, { status: 500 })
   }
 }
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       },
     })
     return NextResponse.json(article)
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Error creating article' }, { status: 500 })
   }
 } 
