@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { fetchArticleByQuery } from "@/app/lib/query/fetch-article-by-query";
 import { Search } from "lucide-react";
 import { Button } from "../ui/button";
+import NotFound from "@/app/404";
 
 type AllArticlesPageProps = {
   searchParams: string; // expects query string like "search=foo&page=1"
@@ -18,7 +19,7 @@ const AllArticlesPage = async ({ searchParams }: AllArticlesPageProps) => {
   const result = await fetchArticleByQuery(searchParams, page);
 
   if (result.articles.length === 0) {
-    return <NoArticlesFound />;
+    return <NotFound />;
   }
 
   const pageNumbers = Array.from(
@@ -152,15 +153,15 @@ const AllArticlesPage = async ({ searchParams }: AllArticlesPageProps) => {
 
 export default AllArticlesPage;
 
-const NoArticlesFound = () => (
-  <div className="flex flex-col items-center justify-center p-8 text-center">
-    <div className="mb-4 rounded-full bg-muted p-4">
-      <Search className="h-8 w-8 text-muted-foreground" />
-    </div>
-    <h3 className="text-xl font-semibold text-foreground">No Results Found</h3>
-    <p className="mt-2 text-muted-foreground">
-      We could not find any articles matching your search. Try a different
-      keyword or phrase.
-    </p>
-  </div>
+// const NoArticlesFound = () => (
+//   <div className="flex flex-col items-center justify-center p-8 text-center">
+//     <div className="mb-4 rounded-full bg-muted p-4">
+//       <Search className="h-8 w-8 text-muted-foreground" />
+//     </div>
+//     <h3 className="text-xl font-semibold text-foreground">No Results Found</h3>
+//     <p className="mt-2 text-muted-foreground">
+//       We could not find any articles matching your search. Try a different
+//       keyword or phrase.
+//     </p>
+//   </div>
 );

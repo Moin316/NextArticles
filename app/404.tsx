@@ -1,15 +1,18 @@
 // app/404.tsx
 "use client";
+
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation"; // ✅ this is safe ONLY with "use client"
 
 export default function NotFound() {
   const router = useRouter();
+  const searchParams = useSearchParams(); // ✅ safe now
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center p-8">
       <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>
       <p className="text-muted-foreground mb-6">
-        The page you are looking for doesn’t exist.
+        Could not find what you were looking for.
       </p>
       <button
         onClick={() => router.push("/")}
