@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { fetchArticleByQuery } from "@/app/lib/query/fetch-article-by-query";
 import { Search } from "lucide-react";
 import { Button } from "../ui/button";
-import NotFound from "@/app/404";
+import NotFound from "@/app/NotFound";
 
 type AllArticlesPageProps = {
   searchParams: string; // expects query string like "search=foo&page=1"
