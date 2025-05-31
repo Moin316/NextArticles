@@ -1,12 +1,14 @@
 "use client";
+
 import React from "react";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { searchAction } from "@/actions/search";
 import { useSearchParams } from "next/navigation";
 
-const ArticleSarchInput = () => {
+const ArticleSearchInput = () => {
   const searchParams = useSearchParams();
+
   return (
     <form action={searchAction} className="mx-auto max-w-2xl">
       <div className="relative">
@@ -20,7 +22,7 @@ const ArticleSarchInput = () => {
         />
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default ArticleSarchInput
+export default ArticleSearchInput;

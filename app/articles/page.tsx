@@ -1,10 +1,10 @@
 import AllArticlesPage from "@/components/articles/AllArticlesPage";
-import ArticleSarchInput from "@/components/articles/ArticleSarchInput";
+import ArticleSearchInput from "@/components/articles/ArticleSarchInput";
 import ArticlesLoading from "@/components/articles/ArticlesLoading";
 import { Suspense } from "react";
 
 export default function Page({ searchParams }: any) {
-  const search = searchParams?.search || "";
+  const queryString = new URLSearchParams(searchParams || {}).toString();
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
@@ -13,10 +13,10 @@ export default function Page({ searchParams }: any) {
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white md:text-5xl">
             All Articles
           </h1>
-          <ArticleSarchInput />
+          <ArticleSearchInput />
         </div>
         <Suspense fallback={<ArticlesLoading />}>
-          <AllArticlesPage searchParams={search} />
+          <AllArticlesPage searchParams={queryString} />
         </Suspense>
       </main>
     </div>

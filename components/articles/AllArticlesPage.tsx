@@ -8,22 +8,19 @@ import { Search } from "lucide-react";
 import { Button } from "../ui/button";
 
 type AllArticlesPageProps = {
-  searchParams: string;
+  searchParams: string; // expects query string like "search=foo&page=1"
 };
 
-const AllArticlesPage: React.FC<AllArticlesPageProps> = async ({
-  searchParams,
-}) => {
-  // Extract page from searchParams
-  const searchParamsObj = new URLSearchParams(searchParams);
-  const page = parseInt(searchParamsObj.get("page") || "1");
+const AllArticlesPage = async ({ searchParams }: AllArticlesPageProps) => {
+  const params = new URLSearchParams(searchParams);
+  const page = parseInt(params.get("page") || "1");
 
   const result = await fetchArticleByQuery(searchParams, page);
+
   if (result.articles.length === 0) {
     return <NoArticlesFound />;
   }
 
-  // Generate page numbers array
   const pageNumbers = Array.from(
     { length: result.totalPages },
     (_, i) => i + 1
@@ -74,10 +71,9 @@ const AllArticlesPage: React.FC<AllArticlesPageProps> = async ({
         ))}
       </div>
 
-      {/* Pagination - only shown when there are articles */}
       <div className="flex justify-center gap-2 mt-12">
         <Link
-          href={`/articles?search=${searchParams}&page=${Math.max(
+          href={`/articles?search=${params.get("search") || ""}&page=${Math.max(
             1,
             result.currentPage - 1
           )}`}
@@ -104,7 +100,9 @@ const AllArticlesPage: React.FC<AllArticlesPageProps> = async ({
         {pageNumbers.map((pageNum) => (
           <Link
             key={pageNum}
-            href={`/articles?search=${searchParams}&page=${pageNum}`}
+            href={`/articles?search=${
+              params.get("search") || ""
+            }&page=${pageNum}`}
           >
             <Button
               variant="ghost"
@@ -121,7 +119,7 @@ const AllArticlesPage: React.FC<AllArticlesPageProps> = async ({
         ))}
 
         <Link
-          href={`/articles?search=${searchParams}&page=${Math.min(
+          href={`/articles?search=${params.get("search") || ""}&page=${Math.min(
             result.totalPages,
             result.currentPage + 1
           )}`}
@@ -154,21 +152,15 @@ const AllArticlesPage: React.FC<AllArticlesPageProps> = async ({
 
 export default AllArticlesPage;
 
-const NoArticlesFound = () => {
-  return (
-    <div className="flex flex-col items-center justify-center p-8 text-center">
-      <div className="mb-4 rounded-full bg-muted p-4">
-        <Search className="h-8 w-8 text-muted-foreground" />
-      </div>
-
-      <h3 className="text-xl font-semibold text-foreground">
-        No Results Found
-      </h3>
-
-      <p className="mt-2 text-muted-foreground">
-        We could not find any articles matching your search. Try a different
-        keyword or phrase.
-      </p>
+const NoArticlesFound = () => (
+  <div className="flex flex-col items-center justify-center p-8 text-center">
+    <div className="mb-4 rounded-full bg-muted p-4">
+      <Search className="h-8 w-8 text-muted-foreground" />
     </div>
-  );
-};
+    <h3 className="text-xl font-semibold text-foreground">No Results Found</h3>
+    <p className="mt-2 text-muted-foreground">
+      We could not find any articles matching your search. Try a different
+      keyword or phrase.
+    </p>
+  </div>
+);
