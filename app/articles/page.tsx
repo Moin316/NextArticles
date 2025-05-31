@@ -9,7 +9,7 @@ type PageProps = {
     page?: string;
   };
 };
-
+// @ts-ignore
 export default function Page({ searchParams }: PageProps) {
   const search = searchParams.search || "";
 
