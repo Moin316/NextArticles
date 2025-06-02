@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { fetchArticleByQuery } from "@/app/lib/query/fetch-article-by-query";
-import { Search } from "lucide-react";
+
 import { Button } from "../ui/button";
 import NotFound from "@/app/NotFound";
 

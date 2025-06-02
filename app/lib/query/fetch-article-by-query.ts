@@ -1,84 +1,99 @@
 import { prisma } from "@/app/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 type ArticleWithAuthor = {
-    id: string;
-    title: string;
-    content: string;
-    category: string;
-    featuredImage: string | null;
-    authorId: string;
-    createdAt: Date;
-    author: {
-        name: string;
-        imageUrl: string | null;
-        email: string;
-    } | null;
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  featuredImage: string | null;
+  authorId: string;
+  createdAt: Date;
+  author: {
+    name: string;
+    imageUrl: string | null;
+    email: string;
+  } | null;
 };
 
 export type PaginatedArticles = {
-    articles: ArticleWithAuthor[];
-    totalPages: number;
-    currentPage: number;
-    totalArticles: number;
-}
+  articles: ArticleWithAuthor[];
+  totalPages: number;
+  currentPage: number;
+  totalArticles: number;
+};
 
 export const ITEMS_PER_PAGE = 6;
 
-export const fetchArticleByQuery = async (query: string, page: number = 1): Promise<PaginatedArticles> => {
-    const skip = (page - 1) * ITEMS_PER_PAGE;
+export const fetchArticleByQuery = async (
+  queryString: string,
+  page: number = 1
+): Promise<PaginatedArticles> => {
+  const params = new URLSearchParams(queryString);
+  const search = params.get("search")?.trim() || "";
+  const skip = (page - 1) * ITEMS_PER_PAGE;
 
-    try {
-        // Get total count for pagination
-        const totalArticles = await prisma.articles.count({
-            where: query && query.trim() !== '' ? {
-                OR: [
-                    { title: { contains: query, mode: 'insensitive' as const } },
-                    { category: { contains: query, mode: 'insensitive' as const } },
-                    { content: { contains: query, mode: 'insensitive' as const } },
-                ],
-            } : undefined
-        });
-
-        // Get paginated articles
-        const articles = await prisma.articles.findMany({
-            where: query && query.trim() !== '' ? {
-                OR: [
-                    { title: { contains: query, mode: 'insensitive' as const } },
-                    { category: { contains: query, mode: 'insensitive' as const } },
-                    { content: { contains: query, mode: 'insensitive' as const } },
-                ],
-            } : undefined,
-            include: {
-                author: {
-                    select: {
-                        name: true,
-                        imageUrl: true,
-                        email: true,
-                    },
-                },
+  const where: Prisma.ArticlesWhereInput | undefined = search
+    ? {
+        OR: [
+          {
+            title: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
             },
-            orderBy: {
-                createdAt: 'desc'
+          },
+          {
+            category: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
             },
-            skip,
-            take: ITEMS_PER_PAGE,
-        });
+          },
+          {
+            content: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+        ],
+      }
+    : undefined;
 
-        const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE);
+  try {
+    const totalArticles = await prisma.articles.count({ where });
 
-        return {
-            articles: articles as ArticleWithAuthor[],
-            totalPages,
-            currentPage: page,
-            totalArticles
-        };
-    } catch (error) {
-        console.error('Error fetching articles:', error);
-        return {
-            articles: [],
-            totalPages: 0,
-            currentPage: page,
-            totalArticles: 0
-        };
-    }
-} 
+    const articles = await prisma.articles.findMany({
+      where,
+      include: {
+        author: {
+          select: {
+            name: true,
+            imageUrl: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip,
+      take: ITEMS_PER_PAGE,
+    });
+
+    const totalPages = Math.ceil(totalArticles / ITEMS_PER_PAGE);
+
+    return {
+      articles,
+      totalPages,
+      currentPage: page,
+      totalArticles,
+    };
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    return {
+      articles: [],
+      totalPages: 0,
+      currentPage: page,
+      totalArticles: 0,
+    };
+  }
+};
