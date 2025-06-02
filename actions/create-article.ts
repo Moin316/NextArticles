@@ -1,10 +1,11 @@
 "use server";
+
 import { prisma } from "@/app/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { revalidatePath } from "next/cache";
+import { ensureUserExists } from "@/app/lib/ensureUserExists"; // ✅ Import helper
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -12,11 +13,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
- 
 const createArticleSchema = z.object({
   title: z.string().min(3).max(100),
   category: z.string().min(3).max(50),
-  content: z.string().min(10), 
+  content: z.string().min(10),
 });
 
 type CreateArticleFormState = {
@@ -33,11 +33,11 @@ export const createArticles = async (
   prevState: CreateArticleFormState,
   formData: FormData
 ): Promise<CreateArticleFormState> => {
-  
+  // Validate form inputs
   const result = createArticleSchema.safeParse({
     title: formData.get("title"),
     category: formData.get("category"),
-    content: formData.get("content"), 
+    content: formData.get("content"),
   });
 
   if (!result.success) {
@@ -46,34 +46,21 @@ export const createArticles = async (
     };
   }
 
-  // ✅ Fix: Get Clerk User ID and check authentication
-  const { userId } = await auth();
+  // ✅ Ensure the current user exists in DB
+  const dbUser = await ensureUserExists();
 
-  if (!userId) {
+  if (!dbUser) {
     return {
       errors: {
-        formErrors: ["You have to login first"],
+        formErrors: ["You must be logged in to create an article."],
       },
     };
   }
 
-  // ✅ Fix: Find the actual user using `clerkUserId` and get their `id`
-  const existingUser = await prisma.user.findUnique({
-    where: { clerkUserId: userId },
-  });
-
-  if (!existingUser) {
-    return {
-      errors: {
-        formErrors: ["User not found. Please register before creating an article."],
-      },
-    };
-  }
-
-  // ✅ Fix: Handle image upload properly
+  // ✅ Validate and upload the image
   const imageFile = formData.get("featuredImage") as File | null;
- 
-  if (!imageFile || imageFile?.name === "undefined") {
+
+  if (!imageFile || imageFile.name === "undefined") {
     return {
       errors: {
         featuredImage: ["Image file is required."],
@@ -84,10 +71,12 @@ export const createArticles = async (
   const arrayBuffer = await imageFile.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
-  const uploadResult: UploadApiResponse | undefined = await new Promise(
-    (resolve, reject) => {
+  let uploadResult: UploadApiResponse | undefined;
+
+  try {
+    uploadResult = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { resource_type: "auto" }, // ✅ Fix: Ensure correct file type handling
+        { resource_type: "auto" },
         (error, result) => {
           if (error) {
             reject(error);
@@ -97,44 +86,46 @@ export const createArticles = async (
         }
       );
       uploadStream.end(buffer);
-    }
-  );
+    });
+  } catch (err) {
+    return {
+      errors: {
+        featuredImage: ["Image upload failed. Please try again."],
+      },
+    };
+  }
 
   const imageUrl = uploadResult?.secure_url;
 
   if (!imageUrl) {
     return {
       errors: {
-        featuredImage: ["Failed to upload image. Please try again."],
+        featuredImage: ["Image upload failed."],
       },
     };
   }
 
+  // ✅ Create the article
   try {
-    // ✅ Fix: Use `existingUser.id` instead of `userId` (which is `clerkUserId`)
     await prisma.articles.create({
       data: {
         title: result.data.title,
         category: result.data.category,
         content: result.data.content,
         featuredImage: imageUrl,
-        authorId: existingUser.id, // ✅ Correct Foreign Key Usage
+        authorId: dbUser.id,
       },
     });
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      return {
-        errors: {
-          formErrors: [error.message],
-        },
-      };
-    } else {
-      return {
-        errors: {
-          formErrors: ["Some internal server error occurred."],
-        },
-      };
-    }
+    return {
+      errors: {
+        formErrors: [
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred.",
+        ],
+      },
+    };
   }
 
   revalidatePath("/dashboard");

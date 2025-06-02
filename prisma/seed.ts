@@ -10,7 +10,7 @@ async function main() {
   
   // Create admin user with the actual Clerk ID
   const admin = await prisma.user.upsert({
-    where: { clerkUserId: 'user_2xgBmKaQvLGBPOHSraF3hwHPGqQ' },
+    where: { clerkUserId: 'user_2xwexvbMVnnImOIQhRtCHNsLeQU' },
     update: {},
     create: {
       email: 'admin@example.com', // This will be updated with your actual email

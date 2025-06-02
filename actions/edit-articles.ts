@@ -12,11 +12,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
- 
 const createArticleSchema = z.object({
   title: z.string().min(3).max(100),
   category: z.string().min(3).max(50),
-  content: z.string().min(10), 
+  content: z.string().min(10),
 });
 
 type CreateArticleFormState = {
@@ -38,7 +37,7 @@ export const editArticles = async (
   const result = createArticleSchema.safeParse({
     title: formData.get("title"),
     category: formData.get("category"),
-    content: formData.get("content"), 
+    content: formData.get("content"),
   });
 
   if (!result.success) {
@@ -57,18 +56,18 @@ export const editArticles = async (
       },
     };
   }
-  const article=await prisma.articles.findUnique({
+  const article = await prisma.articles.findUnique({
     where: {
       id: articleId,
-    }
-  })
-if(!article){
-  return {
-    errors: {
-      formErrors: ["Article not found"],
     },
-  };
-}
+  });
+  if (!article) {
+    return {
+      errors: {
+        formErrors: ["Article not found"],
+      },
+    };
+  }
 
   // ✅ Fix: Find the actual user using `clerkUserId` and get their `id`
   const existingUser = await prisma.user.findUnique({
@@ -78,14 +77,16 @@ if(!article){
   if (!existingUser) {
     return {
       errors: {
-        formErrors: ["User not found. Please register before creating an article."],
+        formErrors: [
+          "User not found. Please register before creating an article.",
+        ],
       },
     };
   }
 
   // ✅ Fix: Handle image upload properly
   const imageFile = formData.get("featuredImage") as File | null;
- 
+
   if (!imageFile || imageFile?.name === "undefined") {
     return {
       errors: {
