@@ -1,15 +1,34 @@
-// components/home/TopArticlesWrapper.tsx
 "use client";
 
 import dynamic from "next/dynamic";
-import React from "react";
+import { Suspense } from "react";
+// import Skeleton from "@/components/ui/skeleton"; // Use your preferred loading component
 
-// Dynamically load TopArticles without SSR
 const TopArticles = dynamic(() => import("./TopArticles"), {
   ssr: false,
-  loading: () => <h1>Loading articles...</h1>,
+  loading: () => (
+    <div className="space-y-4">
+      {/* <Skeleton className="h-[300px] w-full" />
+      <Skeleton className="h-[100px] w-full" />
+      <Skeleton className="h-[100px] w-full" /> */}
+      Loading...
+    </div>
+  ),
 });
 
 export default function TopArticlesWrapper() {
-  return <TopArticles />;
+  return (
+    <Suspense
+      fallback={
+        <div className="space-y-4">
+          {/* <Skeleton className="h-[300px] w-full" />
+          <Skeleton className="h-[100px] w-full" />
+          <Skeleton className="h-[100px] w-full" /> */}
+          Loading...
+        </div>
+      }
+    >
+      <TopArticles />
+    </Suspense>
+  );
 }

@@ -1,10 +1,26 @@
 import AllArticlesPage from "@/components/articles/AllArticlesPage";
 import ArticleSearchInput from "@/components/articles/ArticleSarchInput";
 import ArticlesLoading from "@/components/articles/ArticlesLoading";
-import { Suspense } from "react";
 
-export default function Page({ searchParams }: any) {
-  const queryString = new URLSearchParams(searchParams || {}).toString();
+import { Suspense } from "react";
+export default function Page({
+  searchParams = {},
+}: {
+  searchParams?: Record<string, string | string[]>;
+}) {
+  const flatParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (Array.isArray(value)) {
+      for (const v of value) {
+        flatParams.append(key, v);
+      }
+    } else {
+      flatParams.append(key, value);
+    }
+  }
+
+  const queryString = flatParams.toString();
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
@@ -22,3 +38,4 @@ export default function Page({ searchParams }: any) {
     </div>
   );
 }
+
