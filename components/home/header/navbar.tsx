@@ -78,7 +78,9 @@ const Navbar = () => {
           </div>
           {/* {darkmode and login/signup buttons can be added here if needed} */}
           <div className="flex items-center space-x-4">
-            <SearchInput />
+            <div className="hidden md:flex">
+              <SearchInput />
+            </div>
             <ModeToggle />
             <SignedIn>
               <UserButton />
