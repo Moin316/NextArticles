@@ -4,7 +4,7 @@ import TopArticles from "@/components/home/TopArticles";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { Suspense } from "react";
-
+export const revalidate = 5; // Revalidate this page every 5 seconds
 const page = async () => {
   return (
     <main>
