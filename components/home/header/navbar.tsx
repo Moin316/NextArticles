@@ -30,7 +30,7 @@ const Navbar = () => {
                 <span className="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-600 bg-clip-text text-transparent">
                   Welcome
                 </span>
-                <span className="text-foreground">Blogs</span>
+                <span className="text-foreground">Articles</span>
               </span>
             </Link>
           </div>
